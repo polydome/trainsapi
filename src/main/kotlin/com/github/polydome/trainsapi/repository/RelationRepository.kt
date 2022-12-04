@@ -6,4 +6,5 @@ import com.github.polydome.trainsapi.model.RelationId
 interface RelationRepository {
     fun createRelation(name: String)
     fun findRelation(id: RelationId): Relation?
+    fun findAllRelations(): List<Relation>
 }

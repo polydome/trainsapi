@@ -3,7 +3,9 @@ package com.github.polydome.trainsapi.data
 import com.github.polydome.trainsapi.model.Relation
 import com.github.polydome.trainsapi.model.RelationId
 import com.github.polydome.trainsapi.repository.RelationRepository
+import javax.enterprise.context.ApplicationScoped
 
+@ApplicationScoped
 class InMemoryRelationRepository : RelationRepository {
     private val relations = mutableListOf<Relation>()
 
@@ -18,5 +20,9 @@ class InMemoryRelationRepository : RelationRepository {
 
     override fun findRelation(id: RelationId): Relation? {
         return relations.find { it.id == id }
+    }
+
+    override fun findAllRelations(): List<Relation> {
+        return relations
     }
 }
