@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
 data class Relation(
     @Contextual val id: RelationId,
     val name: String,
+    val destinations: List<Destination> = emptyList()
 )
