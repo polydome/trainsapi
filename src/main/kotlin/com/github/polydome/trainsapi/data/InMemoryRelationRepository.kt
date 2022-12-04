@@ -1,15 +1,18 @@
 package com.github.polydome.trainsapi.data
 
 import com.github.polydome.trainsapi.model.Destination
+import com.github.polydome.trainsapi.model.MinuteOfDay
 import com.github.polydome.trainsapi.model.Relation
 import com.github.polydome.trainsapi.model.RelationId
+import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.repository.DestinationRepository
 import com.github.polydome.trainsapi.repository.RelationRepository
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class InMemoryRelationRepository : RelationRepository, DestinationRepository {
+class InMemoryRelationRepository : RelationRepository, DestinationRepository, CourseRepository {
     private val relations = mutableListOf<Relation>()
+    private val courses = mutableMapOf<RelationId, MutableList<MinuteOfDay>>()
 
     override fun createRelation(name: String) {
         val id = RelationId(name.hashCode().toString())
@@ -18,6 +21,7 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository {
             id = id
         )
         relations.add(relation)
+        courses[relation.id] = mutableListOf()
     }
 
     override fun findRelation(id: RelationId): Relation? {
@@ -43,5 +47,13 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository {
             relations.removeAt(index)
             relations.add(index, relation.copy(destinations = relation.destinations.minus(destination)))
         }
+    }
+
+    override fun addCourse(relationId: RelationId, departureTime: MinuteOfDay) {
+        courses[relationId]?.add(departureTime)
+    }
+
+    override fun removeCourse(relationId: RelationId, departureTime: MinuteOfDay) {
+        courses[relationId]?.remove(departureTime)
     }
 }
