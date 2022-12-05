@@ -6,10 +6,11 @@ import com.github.polydome.trainsapi.repository.DestinationRepository
 import com.github.polydome.trainsapi.validation.requireParamNotNull
 import org.jboss.resteasy.reactive.RestForm
 import org.jboss.resteasy.reactive.RestPath
+import javax.ws.rs.DELETE
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 
-@Path("/relations/{relationId}/destinations")
+@Path("relations/{relationId}/destinations")
 class DestinationsEndpoint(
     private val destinationRepository: DestinationRepository
 ) {
@@ -35,6 +36,18 @@ class DestinationsEndpoint(
                 arrivalTime = arrivalTime,
                 departureTime = departureTime
             )
+        )
+    }
+
+    @Path("{index}")
+    @DELETE
+    fun deleteDestination(
+        @RestPath relationId: RelationId,
+        @RestPath index: Int
+    ) {
+        destinationRepository.removeDestination(
+            relationId = relationId,
+            destinationIndex = index
         )
     }
 }

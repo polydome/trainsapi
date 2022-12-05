@@ -6,11 +6,12 @@ import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.validation.requireParamNotNull
 import org.jboss.resteasy.reactive.RestForm
 import org.jboss.resteasy.reactive.RestPath
+import javax.ws.rs.DELETE
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 
-@Path("/relations/{relationId}/courses")
+@Path("relations/{relationId}/courses")
 class CoursesEndpoint(
     private val courseRepository: CourseRepository
 ) {
@@ -33,4 +34,18 @@ class CoursesEndpoint(
     ): List<String> = courseRepository
         .findAllCourses(relationId)
         .map { it.toString() }
+
+    @Path("{departureTime}")
+    @DELETE
+    fun deleteCourse(
+        @RestPath relationId: RelationId,
+        @RestPath departureTime: String?
+    ) {
+        requireParamNotNull("departureTime", departureTime)
+
+        courseRepository.removeCourse(
+            relationId = relationId,
+            departureTime = MinuteOfDay.parse(departureTime)
+        )
+    }
 }

@@ -8,7 +8,7 @@ import org.jboss.resteasy.reactive.RestQuery
 import javax.ws.rs.GET
 import javax.ws.rs.Path
 
-@Path("/connections")
+@Path("connections")
 class ConnectionsEndpoint(
     private val relationRepository: RelationRepository,
     private val courseRepository: CourseRepository
