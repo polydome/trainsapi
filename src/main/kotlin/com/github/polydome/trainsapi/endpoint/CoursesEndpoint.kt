@@ -6,6 +6,7 @@ import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.validation.requireParamNotNull
 import org.jboss.resteasy.reactive.RestForm
 import org.jboss.resteasy.reactive.RestPath
+import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 
@@ -25,4 +26,11 @@ class CoursesEndpoint(
             departureTime = MinuteOfDay.parse(departureTime)
         )
     }
+
+    @GET
+    fun listCourses(
+        @RestPath relationId: RelationId
+    ): List<String> = courseRepository
+        .findAllCourses(relationId)
+        .map { it.toString() }
 }
