@@ -22,7 +22,7 @@ class RelationsEndpoint(
         relationRepository.createRelation(name)
 
         return Response
-            .status(200)
+            .status(204)
             .build()
     }
 
