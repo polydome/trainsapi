@@ -1,3 +1,4 @@
+import com.github.polydome.trainsapi.model.RelationId
 import io.quarkus.test.junit.QuarkusTest
 import io.restassured.RestAssured.given
 import io.restassured.response.Response
@@ -53,17 +54,24 @@ class RelationsEndpointTest {
             .then()
             .statusCode(404)
     }
+}
 
-    fun createRelation(): Response =
-        given()
-            .formParam("name", "Hello")
-            .post("/relations")
+fun createRelation(): Response =
+    given()
+        .formParam("name", "Hello")
+        .post("/relations")
 
-    fun getAllRelations(): Response =
-        given()
-            .get("/relations")
+fun getAllRelations(): Response =
+    given()
+        .get("/relations")
 
-    fun deleteRelation(relationId: String): Response =
-        given()
-            .delete("/relations/$relationId")
+fun deleteRelation(relationId: String): Response =
+    given()
+        .delete("/relations/$relationId")
+
+fun createRelationAndGetId(): String {
+    createRelation()
+
+    return getAllRelations().body.jsonPath()
+        .getString("[0].id")
 }
