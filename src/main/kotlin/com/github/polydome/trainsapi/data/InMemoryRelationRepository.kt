@@ -6,6 +6,7 @@ import com.github.polydome.trainsapi.model.Relation
 import com.github.polydome.trainsapi.model.RelationId
 import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.repository.DestinationRepository
+import com.github.polydome.trainsapi.repository.NoSuchResourceException
 import com.github.polydome.trainsapi.repository.RelationRepository
 import javax.enterprise.context.ApplicationScoped
 
@@ -32,6 +33,13 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository, Co
         return relations
     }
 
+    override fun findRelationsBetweenStations(startStation: String, endStation: String): List<Relation> {
+        return relations.filter {
+            it.destinations.first().stationName == startStation &&
+                    it.destinations.last().stationName == endStation
+        }
+    }
+
     override fun addDestination(relationId: RelationId, destination: Destination) {
         relations.find { it.id == relationId }?.let {
             val index = relations.indexOf(it)
@@ -55,5 +63,13 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository, Co
 
     override fun removeCourse(relationId: RelationId, departureTime: MinuteOfDay) {
         courses[relationId]?.remove(departureTime)
+    }
+
+    override fun findCoursesByRelationId(relationId: RelationId): List<MinuteOfDay> {
+        return courses.getOrDefault(relationId, emptyList())
+    }
+
+    override fun findAllCourses(relationId: RelationId): List<MinuteOfDay> {
+        return courses[relationId] ?: throw NoSuchResourceException()
     }
 }

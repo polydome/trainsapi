@@ -14,4 +14,13 @@ value class MinuteOfDay(val value: Int) {
             return MinuteOfDay(hour * 60 + minute)
         }
     }
+
+    override fun toString(): String {
+        val hours = value / 60
+        val minutes = value.mod(60)
+        return "${hours.formatTime()}:${minutes.formatTime()}"
+    }
+
+    private fun Int.formatTime(): String =
+        this.toString().padStart(2, '0')
 }
