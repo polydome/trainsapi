@@ -11,4 +11,5 @@ interface RelationRepository {
         startStation: String,
         endStation: String
     ): List<Relation>
+    fun removeById(relationId: RelationId)
 }

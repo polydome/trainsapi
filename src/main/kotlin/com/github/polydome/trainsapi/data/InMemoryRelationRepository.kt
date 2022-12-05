@@ -40,6 +40,11 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository, Co
         }
     }
 
+    override fun removeById(relationId: RelationId) {
+        val relation = relations.find { it.id == relationId } ?: throw NoSuchResourceException()
+        relations.remove(relation)
+    }
+
     override fun addDestination(relationId: RelationId, destination: Destination) {
         relations.find { it.id == relationId }?.let {
             val index = relations.indexOf(it)
