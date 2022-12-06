@@ -26,7 +26,7 @@ class MongoRelationRepository : RelationRepository, PanacheMongoRepository<Relat
         findAll().list().map { it.toRelation() }
 
     override fun findRelationsBetweenStations(startStation: String, endStation: String): List<Relation> {
-        return find("{}").list().map { it.toRelation() }
+        return find("destinations.stationName = ?1 and destinations.stationName = ?2", startStation, endStation).list().map { it.toRelation() }
     }
 
     override fun removeById(relationId: RelationId) {

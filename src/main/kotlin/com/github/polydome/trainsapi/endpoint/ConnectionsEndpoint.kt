@@ -25,13 +25,24 @@ class ConnectionsEndpoint(
         val relations = relationRepository.findRelationsBetweenStations(startStation, endStation)
         return relations.flatMap { relation ->
             courseRepository.findCoursesByRelationId(relation.id).map { departureTime -> relation to departureTime }
-        }.map { (relation, departureTime) ->
-            val arrivalTime = relation.destinations.last().arrivalTime
-            val startStation =
-                relation.destinations.find { it.stationName == startStation } ?: throw IllegalStateException()
-            requireNotNull(arrivalTime)
-            val departureRelative = departureTime + MinuteOfDay(startStation.departureTime ?: throw IllegalStateException())
-            val arrivalRelative = departureTime + MinuteOfDay(arrivalTime)
+        }.mapNotNull { (relation, departureTime) ->
+            val collection = relation.destinations.mapIndexed { index, destination ->
+                index to destination
+            }.filter { (index, destination) ->
+                destination.stationName == startStation || destination.stationName == endStation
+            }
+                .sortedBy { (index, destination) -> index }
+            if (collection.first().second.stationName != startStation) {
+                return@mapNotNull null
+            }
+
+            val startStation = collection.first().second
+            val endStation = collection.last().second
+
+            requireNotNull(startStation.departureTime)
+            requireNotNull(endStation.arrivalTime)
+            val departureRelative = departureTime + MinuteOfDay(startStation.departureTime)
+            val arrivalRelative = departureTime + MinuteOfDay(endStation.arrivalTime)
             Connection(
                 relation = relation.name,
                 departureTime = departureRelative.toString(),
