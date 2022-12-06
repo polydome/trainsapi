@@ -23,4 +23,7 @@ value class MinuteOfDay(val value: Int) {
 
     private fun Int.formatTime(): String =
         this.toString().padStart(2, '0')
+
+
+    operator fun plus(other: MinuteOfDay) = MinuteOfDay(value + other.value)
 }

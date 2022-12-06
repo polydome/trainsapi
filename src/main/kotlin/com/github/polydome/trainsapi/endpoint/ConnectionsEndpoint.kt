@@ -1,6 +1,7 @@
 package com.github.polydome.trainsapi.endpoint
 
 import com.github.polydome.trainsapi.model.Connection
+import com.github.polydome.trainsapi.model.MinuteOfDay
 import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.repository.RelationRepository
 import com.github.polydome.trainsapi.validation.requireParamNotNull
@@ -26,11 +27,15 @@ class ConnectionsEndpoint(
             courseRepository.findCoursesByRelationId(relation.id).map { departureTime -> relation to departureTime }
         }.map { (relation, departureTime) ->
             val arrivalTime = relation.destinations.last().arrivalTime
+            val startStation =
+                relation.destinations.find { it.stationName == startStation } ?: throw IllegalStateException()
             requireNotNull(arrivalTime)
+            val departureRelative = departureTime + MinuteOfDay(startStation.departureTime ?: throw IllegalStateException())
+            val arrivalRelative = departureTime + MinuteOfDay(arrivalTime)
             Connection(
                 relation = relation.name,
-                departureTime = departureTime.toString(),
-                arrivalTime = arrivalTime.toString()
+                departureTime = departureRelative.toString(),
+                arrivalTime = arrivalRelative.toString()
             )
         }
     }

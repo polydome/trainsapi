@@ -23,6 +23,14 @@ class MongoDestinationRepository : DestinationRepository, PanacheMongoRepository
     }
 
     override fun removeDestination(relationId: RelationId, destinationIndex: Int) {
-        deleteById(relationId.toObjectId())
+        val relation = findById(relationId.toObjectId()) ?: throw NoSuchResourceException()
+
+        val newRelation = relation.copy(
+            destinations = relation.destinations.filterIndexed { index, _ ->
+                index != destinationIndex
+            }
+        )
+
+        update(newRelation)
     }
 }

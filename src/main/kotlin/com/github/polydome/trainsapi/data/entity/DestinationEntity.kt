@@ -15,7 +15,7 @@ data class DestinationEntity @BsonCreator constructor(
     @BsonProperty("departureTime") val departureTime: Int?
 )
 
-fun DestinationEntity.toDestination() = Destination(
+fun DestinationEntity.toDestination(): Destination = Destination(
     stationName = stationName,
     platform = Destination.PlatformIndex(platform),
     track = Destination.TrackIndex(track),
