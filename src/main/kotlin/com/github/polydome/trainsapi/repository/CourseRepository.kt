@@ -7,5 +7,4 @@ interface CourseRepository {
     fun addCourse(relationId: RelationId, departureTime: MinuteOfDay)
     fun removeCourse(relationId: RelationId, departureTime: MinuteOfDay)
     fun findCoursesByRelationId(relationId: RelationId): List<MinuteOfDay>
-    fun findAllCourses(relationId: RelationId): List<MinuteOfDay>
 }

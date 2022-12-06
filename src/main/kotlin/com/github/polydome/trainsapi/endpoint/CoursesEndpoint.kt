@@ -32,7 +32,7 @@ class CoursesEndpoint(
     fun listCourses(
         @RestPath relationId: RelationId
     ): List<String> = courseRepository
-        .findAllCourses(relationId)
+        .findCoursesByRelationId(relationId)
         .map { it.toString() }
 
     @Path("{departureTime}")

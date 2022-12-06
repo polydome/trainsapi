@@ -8,9 +8,7 @@ import com.github.polydome.trainsapi.repository.CourseRepository
 import com.github.polydome.trainsapi.repository.DestinationRepository
 import com.github.polydome.trainsapi.repository.NoSuchResourceException
 import com.github.polydome.trainsapi.repository.RelationRepository
-import javax.enterprise.context.ApplicationScoped
 
-@ApplicationScoped
 class InMemoryRelationRepository : RelationRepository, DestinationRepository, CourseRepository {
     private val relations = mutableListOf<Relation>()
     private val courses = mutableMapOf<RelationId, MutableList<MinuteOfDay>>()
@@ -72,9 +70,5 @@ class InMemoryRelationRepository : RelationRepository, DestinationRepository, Co
 
     override fun findCoursesByRelationId(relationId: RelationId): List<MinuteOfDay> {
         return courses.getOrDefault(relationId, emptyList())
-    }
-
-    override fun findAllCourses(relationId: RelationId): List<MinuteOfDay> {
-        return courses[relationId] ?: throw NoSuchResourceException()
     }
 }
